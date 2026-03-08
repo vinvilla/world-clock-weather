@@ -84,6 +84,9 @@ export function getMoonData(date = new Date(), timezone = 'UTC') {
 
   // Days since last full moon
   const SYNODIC = 29.530589;
+  // Phase 0→1 over 29.53 days; full moon at 0.5.
+  // If phase >= 0.5: days since full moon = (phase - 0.5) * SYNODIC
+  // If phase < 0.5: last full moon was more than 14 days ago = (phase + 0.5) * SYNODIC
   const daysSinceFullMoon = Math.round(
     phase >= 0.5 ? (phase - 0.5) * SYNODIC : (phase + 0.5) * SYNODIC
   );
@@ -113,7 +116,10 @@ export function getMoonData(date = new Date(), timezone = 'UTC') {
 
 function findNextFullMoon(fromDate) {
   const d = new Date(fromDate);
-  for (let i = 1; i <= 31; i++) {
+  // Loop needs at least 32 days to cover the worst case:
+  // a day immediately after full moon (phase just above 0.5625),
+  // where the next full moon is ~28-29 days away.
+  for (let i = 1; i <= 32; i++) {
     d.setDate(d.getDate() + 1);
     const p = SunCalc.getMoonIllumination(d).phase;
     if (p >= 0.4375 && p <= 0.5625) return new Date(d);

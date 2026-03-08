@@ -98,6 +98,15 @@ describe('getMoonData', () => {
     const data = getMoonData(NOON_UTC, 'Europe/London');
     expect(data.daysToNextFullMoon).toBeGreaterThan(0);
   });
+
+  test('daysSinceFullMoon is roughly 14-15 days at new moon phase', () => {
+    // Phase ~0 = new moon = halfway between two full moons = ~14.8 days since last
+    // Use a known approximate new moon per SunCalc: 2026-01-20 (phase ~0.052)
+    const newMoonDate = new Date('2026-01-20T12:00:00Z');
+    const { daysSinceFullMoon } = getMoonData(newMoonDate, 'UTC');
+    expect(daysSinceFullMoon).toBeGreaterThanOrEqual(13);
+    expect(daysSinceFullMoon).toBeLessThanOrEqual(17);
+  });
 });
 
 describe('getMoonPhaseName', () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import CityCard from './CityCard';
 import AiPanel from './AiPanel';
 import DayNightStrip from './DayNightStrip';
@@ -28,9 +28,9 @@ async function fetchWeather(query) {
   };
 }
 
-function buildSolarMap(date) {
+function buildSolarMap(cities, date) {
   return Object.fromEntries(
-    CITIES.map(city => [
+    cities.map(city => [
       city.name,
       {
         ...getSolarData(city, date),
@@ -44,7 +44,8 @@ function App() {
   const [weatherMap, setWeatherMap]               = useState({});
   const [loading, setLoading]                     = useState(true);
   const [highlightedCities, setHighlightedCities] = useState(null);
-  const [solarMap, setSolarMap]                   = useState(() => buildSolarMap(new Date()));
+  const [solarMap, setSolarMap]                   = useState(() => buildSolarMap(CITIES, new Date()));
+  const citiesRef = useRef(CITIES);
 
   useEffect(() => {
     const load = async () => {
@@ -63,7 +64,7 @@ function App() {
     load();
 
     const solarInterval = setInterval(() => {
-      setSolarMap(buildSolarMap(new Date()));
+      setSolarMap(buildSolarMap(citiesRef.current, new Date()));
     }, 60_000);
 
     return () => clearInterval(solarInterval);

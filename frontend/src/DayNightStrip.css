@@ -1,0 +1,101 @@
+.dns-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 32px;
+  user-select: none;
+}
+
+/* Axis row */
+.dns-axis {
+  position: relative;
+  height: 20px;
+  margin-bottom: 4px;
+}
+
+.dns-gmt-label {
+  position: absolute;
+  left: 0;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.dns-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* The gradient bar */
+.dns-bar {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: visible;
+}
+
+/* City pins */
+.dns-pin {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.dns-pin-icon {
+  font-size: 1rem;
+  line-height: 1;
+  margin-top: -18px;
+}
+
+.dns-pin-line {
+  width: 1px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dns-pin-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* NOW marker */
+.dns-now {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.dns-now-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-top: -16px;
+  letter-spacing: 0.5px;
+}
+
+.dns-now-line {
+  width: 2px;
+  height: 48px;
+  background: rgba(167, 139, 250, 0.7);
+  border-radius: 2px;
+}
+
+/* Hide city labels on mobile */
+@media (max-width: 580px) {
+  .dns-pin-label { display: none; }
+  .dns-tick      { display: none; }
+}

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { buildStripGradient, getUTCOffset } from './utils/solar';
 import './DayNightStrip.css';
 
@@ -10,10 +9,10 @@ function pctFromOffset(offset) {
 }
 
 export default function DayNightStrip({ cities, solarMap }) {
-  const gradient = useMemo(() => buildStripGradient(new Date()), []);
-  const nowOffset = useMemo(() => getUTCOffset(
-    Intl.DateTimeFormat().resolvedOptions().timeZone
-  ), []);
+  if (!cities || !solarMap) return null;
+
+  const gradient = buildStripGradient(new Date());
+  const nowOffset = getUTCOffset(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   return (
     <div className="dns-wrapper" data-testid="day-night-strip">

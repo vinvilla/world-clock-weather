@@ -111,10 +111,16 @@ app.get('/api/geocode', async (req, res) => {
   if (!q || q.trim().length < 2) {
     return res.status(400).json({ error: 'Query too short' });
   }
+  const apiKey = process.env.REACT_APP_WEATHER_API_KEY || process.env.OWM_API_KEY || process.env.WEATHER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'OWM API key not configured' });
+  }
   try {
-    const apiKey = process.env.REACT_APP_WEATHER_API_KEY || process.env.OWM_API_KEY || process.env.WEATHER_API_KEY;
     const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(q)}&limit=5&appid=${apiKey}`;
     const response = await fetch(url);
+    if (!response.ok) {
+      return res.status(502).json({ error: 'OWM geocoding error', status: response.status });
+    }
     const data = await response.json();
     const results = (Array.isArray(data) ? data : []).map(r => ({
       name:    r.name,
@@ -125,6 +131,7 @@ app.get('/api/geocode', async (req, res) => {
     }));
     res.json(results);
   } catch (err) {
+    console.error('Geocoding error:', err.message);
     res.status(500).json({ error: 'Geocoding failed', detail: err.message });
   }
 });

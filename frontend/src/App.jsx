@@ -73,7 +73,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>World Clock & Weather</h1>
-        <p>Live time and weather across 5 cities</p>
+        <p>Live time and weather across your cities</p>
       </header>
 
       <DayNightStrip cities={CITIES} solarMap={solarMap} />

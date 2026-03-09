@@ -134,6 +134,7 @@ function App() {
   if (session === undefined) return null;
 
   if (session === null) {
+    // Session transitions are handled by onAuthStateChange subscription above
     return <AuthOverlay onLogin={() => {}} />;
   }
 

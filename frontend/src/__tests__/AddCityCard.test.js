@@ -53,5 +53,6 @@ test('calls onAdd with city data when result selected', async () => {
     lat: 35.68,
     lon: 139.69,
     country: 'JP',
+    owm_query: 'Tokyo,JP',
   }));
 });

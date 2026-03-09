@@ -18,8 +18,11 @@ export default function AddCityCard({ onAdd }) {
       setLoading(true);
       try {
         const res = await fetch(`/api/geocode?q=${encodeURIComponent(val)}`);
+        if (!res.ok) { setResults([]); return; }
         const data = await res.json();
         setResults(Array.isArray(data) ? data : []);
+      } catch {
+        setResults([]);
       } finally {
         setLoading(false);
       }
@@ -70,7 +73,7 @@ export default function AddCityCard({ onAdd }) {
       {results.length > 0 && (
         <ul className="add-city-dropdown">
           {results.map((r, i) => (
-            <li key={i} className="add-city-result" onClick={() => handleSelect(r)}>
+            <li key={`${r.lat}-${r.lon}`} className="add-city-result" onClick={() => handleSelect(r)}>
               {r.name}{r.state ? `, ${r.state}` : ''}, {r.country}
             </li>
           ))}

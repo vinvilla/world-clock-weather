@@ -27,11 +27,13 @@ function localTimeAtOffset(offset) {
 }
 
 export default function DayNightStrip({ cities, solarMap }) {
+  // useState MUST come before any early return (Rules of Hooks)
+  const [tooltip, setTooltip] = useState(null);
+
   if (!cities || !solarMap) return null;
 
   const gradient = buildStripGradient(new Date());
   const nowOffset = getUTCOffset(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const [tooltip, setTooltip] = useState(null);
 
   function handleMouseMove(e) {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -44,8 +46,16 @@ export default function DayNightStrip({ cities, solarMap }) {
       return solar && Math.abs(solar.utcOffset - rawOffset) < SNAP_THRESHOLD;
     }) || null;
 
+    // Pre-compute city snap data so JSX stays clean
+    const citySnap = nearestCity ? {
+      name:    nearestCity.name,
+      isDay:   solarMap[nearestCity.name].isDay,
+      sunrise: solarMap[nearestCity.name].sunrise,
+      sunset:  solarMap[nearestCity.name].sunset,
+    } : null;
+
     const tooltipX = Math.min(Math.max(pct * 100, 5), 95);
-    setTooltip({ x: tooltipX, offset, city: nearestCity });
+    setTooltip({ x: tooltipX, offset, citySnap });
   }
 
   function handleMouseLeave() {
@@ -95,17 +105,14 @@ export default function DayNightStrip({ cities, solarMap }) {
           >
             <div className="dns-tooltip-offset">{formatOffset(tooltip.offset)}</div>
             <div className="dns-tooltip-time">{localTimeAtOffset(tooltip.offset)}</div>
-            {tooltip.city && (() => {
-              const solar = solarMap[tooltip.city.name];
-              return (
-                <>
-                  <div className="dns-tooltip-city">
-                    {solar.isDay ? '☀️' : '🌙'} {tooltip.city.name}
-                  </div>
-                  <div className="dns-tooltip-sun">↑{solar.sunrise} ↓{solar.sunset}</div>
-                </>
-              );
-            })()}
+            {tooltip.citySnap && (
+              <>
+                <div className="dns-tooltip-city">
+                  {tooltip.citySnap.isDay ? '☀️' : '🌙'} {tooltip.citySnap.name}
+                </div>
+                <div className="dns-tooltip-sun">↑{tooltip.citySnap.sunrise} ↓{tooltip.citySnap.sunset}</div>
+              </>
+            )}
           </div>
         )}
       </div>

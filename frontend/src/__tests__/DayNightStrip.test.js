@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import DayNightStrip from '../DayNightStrip';
 
 const CITIES = [
@@ -45,4 +45,44 @@ test('night city shows moon emoji', () => {
   render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
   const pins = screen.getAllByText('🌙');
   expect(pins.length).toBeGreaterThanOrEqual(1);
+});
+
+test('tooltip is hidden initially', () => {
+  render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
+  expect(screen.queryByTestId('dns-tooltip')).not.toBeInTheDocument();
+});
+
+test('tooltip appears on mousemove over the bar', () => {
+  render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
+  const bar = screen.getByTestId('dns-bar');
+  bar.getBoundingClientRect = () => ({ left: 0, width: 1000 });
+  fireEvent.mouseMove(bar, { clientX: 500 });
+  expect(screen.getByTestId('dns-tooltip')).toBeInTheDocument();
+});
+
+test('tooltip shows GMT text', () => {
+  render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
+  const bar = screen.getByTestId('dns-bar');
+  bar.getBoundingClientRect = () => ({ left: 0, width: 1000 });
+  fireEvent.mouseMove(bar, { clientX: 500 });
+  expect(screen.getByTestId('dns-tooltip').textContent).toMatch(/GMT/);
+});
+
+test('tooltip hides on mouseleave', () => {
+  render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
+  const bar = screen.getByTestId('dns-bar');
+  bar.getBoundingClientRect = () => ({ left: 0, width: 1000 });
+  fireEvent.mouseMove(bar, { clientX: 500 });
+  expect(screen.getByTestId('dns-tooltip')).toBeInTheDocument();
+  fireEvent.mouseLeave(bar);
+  expect(screen.queryByTestId('dns-tooltip')).not.toBeInTheDocument();
+});
+
+test('tooltip snaps to London when hovering near its pin (UTC+0)', () => {
+  // London is UTC+0. offset=0 → pct = 12/26. At width=1040: clientX = 1040*12/26 = 480
+  render(<DayNightStrip cities={CITIES} solarMap={solarMap} />);
+  const bar = screen.getByTestId('dns-bar');
+  bar.getBoundingClientRect = () => ({ left: 0, width: 1040 });
+  fireEvent.mouseMove(bar, { clientX: 480 });
+  expect(screen.getByTestId('dns-tooltip').textContent).toContain('London');
 });

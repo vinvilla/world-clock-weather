@@ -1,0 +1,94 @@
+.add-city-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  min-height: 120px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.add-city-card:hover {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.add-city-card--active {
+  align-items: stretch;
+  justify-content: flex-start;
+  cursor: default;
+  min-height: 160px;
+  position: relative;
+}
+
+.add-city-icon {
+  font-size: 1.8rem;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1;
+}
+
+.add-city-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+.add-city-input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+}
+
+.add-city-input:focus { border-color: rgba(167, 139, 250, 0.6); }
+.add-city-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+.add-city-dropdown {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  background: rgba(20, 15, 50, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.add-city-result {
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.add-city-result:hover { background: rgba(167, 139, 250, 0.15); }
+
+.add-city-loading {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 6px 2px;
+}
+
+.add-city-cancel {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-top: auto;
+  padding: 4px 0;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+}
+
+.add-city-cancel:hover { color: rgba(255, 255, 255, 0.6); }

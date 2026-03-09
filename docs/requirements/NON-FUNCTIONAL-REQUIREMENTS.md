@@ -1,6 +1,6 @@
 # Non-Functional Requirements
 **Project:** World Clock & Weather Dashboard
-**Version:** 1.1
+**Version:** 1.2
 **Date:** 2026-03-08
 
 ---
@@ -66,3 +66,11 @@
 | NFR-07.2 | The suncalc library must remain the only astronomy dependency — no additional solar APIs |
 | NFR-07.3 | The day/night strip gradient must render without perceptible layout shift or flicker on update |
 | NFR-07.4 | suncalc bundle addition must not cause initial page load to exceed the NFR-01.4 5-second budget |
+
+### NFR-08: Security
+
+| ID | Requirement |
+|----|-------------|
+| NFR-08.1 | The Supabase anon key is safe to expose in the frontend bundle; access is governed by RLS policies |
+| NFR-08.2 | The OWM API key must remain server-side only; frontend geocoding requests go through the `/api/geocode` proxy |
+| NFR-08.3 | Supabase `user_cities` RLS policy enforces that users can only read, insert, update, and delete their own rows |

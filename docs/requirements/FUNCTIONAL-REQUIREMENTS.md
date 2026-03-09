@@ -1,6 +1,6 @@
 # Functional Requirements
 **Project:** World Clock & Weather Dashboard
-**Version:** 1.1
+**Version:** 1.2
 **Date:** 2026-03-08
 
 ---
@@ -82,3 +82,33 @@
 | FR-06.2 | 2-column grid on tablet (580–900px) |
 | FR-06.3 | 1-column on mobile (<580px) |
 | FR-06.4 | AI panel spans full width below the city grid |
+
+### FR-09: City Management
+
+| ID | Requirement |
+|----|-------------|
+| FR-09.1 | Users can remove any displayed city via an inline × button shown on card hover |
+| FR-09.2 | Users can add a city via a "+" ghost card that expands to a search input |
+| FR-09.3 | Search uses the OWM geocoding API (proxied through the backend) to resolve city name → lat/lon |
+| FR-09.4 | Timezone is derived client-side from lat/lon using the `tz-lookup` library |
+| FR-09.5 | Maximum 6 cities per user; "+" card hidden when limit reached |
+| FR-09.6 | City list is persisted per user in the Supabase `user_cities` table |
+
+### FR-10: Authentication
+
+| ID | Requirement |
+|----|-------------|
+| FR-10.1 | Users can sign in with email and password via Supabase Auth |
+| FR-10.2 | Users can create a new account with email and password |
+| FR-10.3 | On first login, a default set of 5 cities is seeded to the user's account |
+| FR-10.4 | The app shows an auth overlay when no session is active; the main UI is hidden |
+| FR-10.5 | Users can sign out; session is cleared and auth overlay is shown again |
+
+### FR-11: DayNightStrip Hover Tooltip
+
+| ID | Requirement |
+|----|-------------|
+| FR-11.1 | Hovering anywhere on the DayNightStrip bar shows a tooltip at the cursor position |
+| FR-11.2 | Tooltip displays the UTC offset (e.g. GMT+5:30) and local time at that longitude |
+| FR-11.3 | If a user's city is within ±1.5 UTC hours of the hover position, the tooltip snaps to show that city's name, day/night status, sunrise, and sunset times |
+| FR-11.4 | Tooltip is hidden on mobile screens (max-width: 580px) |

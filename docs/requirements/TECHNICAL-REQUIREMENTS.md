@@ -1,6 +1,6 @@
 # Technical Requirements
 **Project:** World Clock & Weather Dashboard
-**Version:** 1.1
+**Version:** 1.2
 **Date:** 2026-03-08
 
 ---
@@ -17,6 +17,8 @@
 | Font | Google Inter | 300–700 | Loaded via `<link>` in index.html |
 | CSS | Plain CSS | — | No UI libraries, no Tailwind |
 | Runtime | Node.js | ≥18 | Both frontend dev server and backend |
+| Frontend | @supabase/supabase-js | ^2.x | Supabase JS client for auth + database |
+| Frontend | tz-lookup | ^6.x | Derive IANA timezone string from lat/lon |
 
 ## TR-02: Project Structure
 
@@ -35,6 +37,11 @@ world-clock-weather/
       index.js               # ReactDOM entry point
       utils/
         solar.js             # getSolarData(), buildStripGradient(), moon phase helpers
+      supabase.js            # Supabase client singleton
+      AuthOverlay.jsx        # Auth sign-in/sign-up overlay
+      AuthOverlay.css        # Auth overlay styles
+      AddCityCard.jsx        # City search + add card
+      AddCityCard.css        # AddCityCard styles
     .env.local               # REACT_APP_WEATHER_API_KEY (gitignored)
     package.json             # proxy: http://localhost:5001
   backend/
@@ -61,6 +68,13 @@ Response fields used:
   data.weather[0].icon     → string (icon code, e.g. "10d")
 
 Icon URL: https://openweathermap.org/img/wn/{icon}@2x.png
+```
+
+### OWM Geocoding proxy (called from frontend via CRA proxy)
+```
+GET /api/geocode?q={city}
+
+Response: [{name, lat, lon, country, state}]
 ```
 
 ### Backend Claude proxy (called from frontend via CRA proxy)
@@ -109,6 +123,8 @@ Error response:
 | `REACT_APP_WEATHER_API_KEY` | `frontend/.env.local` | Frontend (browser) | OpenWeatherMap API key |
 | `ANTHROPIC_API_KEY` | `backend/.env` | Backend (server) | Anthropic Claude API key |
 | `PORT` | `backend/.env` | Backend | Server port (default: 5001) |
+| `REACT_APP_SUPABASE_URL` | `frontend/.env.local` | Frontend (browser) | Supabase project URL |
+| `REACT_APP_SUPABASE_ANON_KEY` | `frontend/.env.local` | Frontend (browser) | Supabase anon/public key |
 
 ## TR-05: Key Implementation Patterns
 
@@ -198,3 +214,23 @@ function nextFullMoon(fromDate) {
   }
 }
 ```
+
+## TR-08: Supabase Schema
+
+**Table: `user_cities`**
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | Primary key, default gen_random_uuid() |
+| user_id | uuid | References auth.users(id), not null |
+| name | text | City display name |
+| lat | float8 | Latitude |
+| lon | float8 | Longitude |
+| timezone | text | IANA timezone string (e.g. "America/New_York") |
+| owm_query | text | OWM query string (e.g. "New York,US") |
+| position | int4 | Display order |
+| created_at | timestamptz | Default now() |
+
+**RLS Policy:**
+- Enable Row Level Security on the table
+- Policy: `using (user_id = auth.uid())` — users can only access their own rows

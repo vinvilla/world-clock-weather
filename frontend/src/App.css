@@ -322,3 +322,34 @@ body {
   color: rgba(255, 255, 255, 0.45);
   line-height: 1.5;
 }
+
+/* Remove city button */
+.city-card-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+  padding: 0;
+}
+
+.city-card:hover .city-card-remove {
+  opacity: 1;
+}
+
+.city-card-remove:hover {
+  background: rgba(255, 80, 80, 0.3);
+  color: #fff;
+}

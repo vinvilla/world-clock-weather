@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import CityCard from '../CityCard';
 
 const baseSolarData = {
@@ -94,4 +95,41 @@ test('renders gracefully when solarData is undefined', () => {
     />
   );
   expect(screen.getByText('Hello, London!')).toBeInTheDocument();
+});
+
+test('shows remove button when onRemove prop provided', () => {
+  render(
+    <CityCard
+      city="London"
+      timezone="Europe/London"
+      weatherData={{ temp: 55, condition: 'cloudy', iconCode: '04d', error: false }}
+      loading={false}
+      dimmed={false}
+      solarData={baseSolarData}
+      onRemove={jest.fn()}
+    />
+  );
+  expect(screen.getByRole('button', { name: /remove/i })).toBeInTheDocument();
+});
+
+test('calls onRemove when × button clicked', async () => {
+  const onRemove = jest.fn();
+  render(
+    <CityCard
+      city="London"
+      timezone="Europe/London"
+      weatherData={{ temp: 55, condition: 'cloudy', iconCode: '04d', error: false }}
+      loading={false}
+      dimmed={false}
+      solarData={baseSolarData}
+      onRemove={onRemove}
+    />
+  );
+  await userEvent.click(screen.getByRole('button', { name: /remove/i }));
+  expect(onRemove).toHaveBeenCalledTimes(1);
+});
+
+test('does not show remove button when onRemove not provided', () => {
+  renderCard(); // uses existing helper
+  expect(screen.queryByRole('button', { name: /remove/i })).not.toBeInTheDocument();
 });

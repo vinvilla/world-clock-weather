@@ -92,7 +92,7 @@ function App() {
       setWeatherMap(map);
       setWeatherLoading(false);
     }
-    init();
+    init().catch(err => console.error('Failed to load cities:', err));
 
     const solarInterval = setInterval(() => {
       setSolarMap(buildSolarMap(citiesRef.current, new Date()));

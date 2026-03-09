@@ -64,3 +64,18 @@ test('shows error message on failed sign in', async () => {
   await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
   await waitFor(() => expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument());
 });
+
+test('calls supabase signUp and onLogin after successful sign up', async () => {
+  supabase.auth.signUp.mockResolvedValue({ data: { user: { id: '456' } }, error: null });
+  const onLogin = jest.fn();
+  render(<AuthOverlay onLogin={onLogin} />);
+  await userEvent.click(screen.getByText(/sign up/i));
+  await userEvent.type(screen.getByPlaceholderText(/email/i), 'new@example.com');
+  await userEvent.type(screen.getByPlaceholderText(/password/i), 'newpass123');
+  await userEvent.click(screen.getByRole('button', { name: /create account/i }));
+  await waitFor(() => expect(supabase.auth.signUp).toHaveBeenCalledWith({
+    email: 'new@example.com',
+    password: 'newpass123',
+  }));
+  await waitFor(() => expect(onLogin).toHaveBeenCalled());
+});

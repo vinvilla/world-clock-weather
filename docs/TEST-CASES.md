@@ -1,13 +1,12 @@
 # Test Cases
 **Project:** World Clock & Weather Dashboard
-**Version:** 1.0
+**Version:** 1.1
 **Date:** 2026-03-08
-
 ---
 
 ## Overview
 
-42 automated tests across 4 test suites, all living in `frontend/src/__tests__/`.
+63 automated tests across 7 test suites, all living in `frontend/src/__tests__/`.
 
 Run the full suite:
 ```bash
@@ -15,7 +14,7 @@ cd frontend
 npm test -- --watchAll=false --forceExit
 ```
 
-Expected output: `Tests: 42 passed, 42 total`
+Expected output: `Tests: 63 passed, 63 total`
 
 ---
 
@@ -160,7 +159,10 @@ Fixture: London card with `isDay=true`, sunrise 6:42 AM, sunset 6:31 PM, countdo
 | App.solar.test.js | `App.jsx` | 2 | Root component with solar state |
 | DayNightStrip.test.js | `DayNightStrip.jsx` | 6 | GMT timeline strip rendering |
 | CityCard.solar.test.js | `CityCard.jsx` | 11 | Card solar enrichment + moon watch data |
-| **Total** | | **42** | |
+| AuthOverlay.test.js | `AuthOverlay.jsx` | 7 | Auth sign-in/sign-up overlay |
+| AddCityCard.test.js | `AddCityCard.jsx` | 5 | City search + add card |
+| App.solar.test.js (auth) | `App.jsx` | 3 | App integration — auth |
+| **Total** | | **63** | |
 
 ---
 
@@ -173,3 +175,39 @@ Fixture: London card with `isDay=true`, sunrise 6:42 AM, sunset 6:31 PM, countdo
 3. **Null safety (TC-C11)**: Solar data loads asynchronously; the card must not crash when `solarData` is `undefined` on first render.
 
 4. **No real API calls**: App.solar.test.js mocks `global.fetch` to prevent network calls, so tests run offline and deterministically.
+
+---
+
+## Suite 5: AuthOverlay (`AuthOverlay.test.js`) — 7 tests
+
+| TC-ID | Test Name | Input | Expected | Rationale |
+|-------|-----------|-------|----------|-----------|
+| TC-AO-01 | renders email and password fields | Mount `<AuthOverlay>` | Email and password inputs visible | Form structure |
+| TC-AO-02 | renders Sign In button by default | Mount `<AuthOverlay>` | Button with label "Sign In" present | Default mode |
+| TC-AO-03 | toggles to Sign Up mode | Click "Sign up" toggle | "Create Account" button appears | Mode switch |
+| TC-AO-04 | calls supabase signInWithPassword on submit | Fill form, click Sign In | `signInWithPassword` called with `{email, password}` | Auth integration |
+| TC-AO-05 | calls onLogin after successful sign in | Mock resolves with user | `onLogin` prop called | Callback contract |
+| TC-AO-06 | shows error message on failed sign in | Mock resolves with error | Error text shown in UI | Error handling |
+| TC-AO-07 | calls supabase signUp and onLogin after successful sign up | Toggle to signup, fill form, submit | `signUp` called, `onLogin` invoked | Signup path |
+
+---
+
+## Suite 6: AddCityCard (`AddCityCard.test.js`) — 5 tests
+
+| TC-ID | Test Name | Input | Expected | Rationale |
+|-------|-----------|-------|----------|-----------|
+| TC-AC-01 | renders the + add card | Mount `<AddCityCard>` | "Add city" text visible | Initial state |
+| TC-AC-02 | shows text input when clicked | Click the card | Search input with placeholder "Search city…" appears | Expansion |
+| TC-AC-03 | calls fetch after typing a city name | Type "Tokyo" | `fetch` called within 700ms | Debounce fires |
+| TC-AC-04 | shows dropdown results after typing | Type "Tokyo", fetch resolves | "Tokyo, JP" visible in dropdown | Result rendering |
+| TC-AC-05 | calls onAdd with city data when result selected | Click "Tokyo, JP" | `onAdd` called with `{name, lat, lon, country, owm_query}` | Selection callback |
+
+---
+
+## Suite 7: App Integration — Auth (`App.solar.test.js`) — 3 tests
+
+| TC-ID | Test Name | Input | Expected | Rationale |
+|-------|-----------|-------|----------|-----------|
+| TC-AI-01 | shows auth overlay when no session | App mounts with null session | Email input (AuthOverlay) visible | Logged-out state |
+| TC-AI-02 | renders DayNightStrip when logged in | App mounts with valid session + cities | `data-testid="day-night-strip"` in DOM | Logged-in state |
+| TC-AI-03 | renders city cards when logged in | App mounts with valid session + cities | "Hello, New York!" visible | City data loaded |

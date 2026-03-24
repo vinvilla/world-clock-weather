@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function CityCard({ city, timezone, weatherData, loading, dimmed, solarData }) {
+function CityCard({ city, timezone, weatherData, loading, dimmed, solarData, onRemove }) {
   const [timeStr, setTimeStr] = useState('');
   const [dateStr, setDateStr] = useState('');
 
@@ -38,6 +38,13 @@ function CityCard({ city, timezone, weatherData, loading, dimmed, solarData }) {
 
   return (
     <div className={`city-card${dimmed ? ' dimmed' : ''}`}>
+      {onRemove && (
+        <button
+          className="city-card-remove"
+          onClick={onRemove}
+          aria-label="Remove city"
+        >×</button>
+      )}
       <div className="city-greeting">Hello, {city}!</div>
       <div className="city-time">{timeStr}</div>
       <div className="city-date">{dateStr}</div>
